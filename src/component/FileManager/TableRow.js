@@ -110,7 +110,7 @@ class TableRowCompoment extends Component {
                     }
                 )}
             >
-                <TableCell component="th" scope="row" className={classes.tableRow}>
+                <TableCell component="th" data-fileid={this.props.file.id} name={this.props.file.name} scope="row" className={classes.tableRow}>
                     <Typography
                         variant="body2"
                         className={classNames(classes.folderName, {

@@ -173,14 +173,32 @@ export default function ObjectIcon(props) {
             case "audio":
                 OpenMusicDialog();
                 return;
-            case "video":
+            case "video": {
+                const videoName = selected[0].name;
+                // 优先查找中文字幕
+                let subTitleName = videoName.substring(0, videoName.lastIndexOf(".")) + ".vtt";
+                let objs = document.getElementsByName(subTitleName);
+
+                // 没有中文字幕就获取英文字幕
+                if (objs.length == 0) {
+                    subTitleName = videoName.substring(0, videoName.lastIndexOf(".")) + ".EN.vtt";
+                    objs = document.getElementsByName(subTitleName);
+                }
+
+                let subTitleId = "";
+                if (objs.length > 0) {
+                    subTitleId = objs[0].getAttribute("data-fileid");
+                }
+
                 if (isShare) {
                     history.push(
                         selected[0].key +
                         "/video?name=" +
                         encodeURIComponent(selected[0].name) +
                         "&share_path=" +
-                        encodeURIComponent(previewPath)
+                        encodeURIComponent(previewPath) +
+                        "&subTitleId=" +
+                        subTitleId
                     );
                     return;
                 }
@@ -188,9 +206,12 @@ export default function ObjectIcon(props) {
                     "/video?p=" +
                     encodeURIComponent(previewPath) +
                     "&id=" +
-                    selected[0].id
+                    selected[0].id +
+                    "&subTitleId=" +
+                    subTitleId
                 );
                 return;
+            }
             case "edit":
                 if (isShare) {
                     history.push(
@@ -296,6 +317,7 @@ export default function ObjectIcon(props) {
                 onContextMenu={contextMenu}
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick.bind(this)}
+                data-fileid={props.file.id} name={props.file.name}
             >
                 {props.file.type === "dir" && viewMethod !== "list" && (
                     <DropWarpper folder={props.file} />
