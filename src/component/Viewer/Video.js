@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     player: {
         borderRadius: "4px",
-        maxHeight:600,
+        maxHeight: 600
     }
 }));
 
@@ -125,13 +125,13 @@ export default function VideoViewer() {
                                 getBaseURL() +
                                 (pathHelper.isSharePage(location.pathname)
                                     ? "/share/preview/" +
-                                    id +
-                                    (query.get("share_path") !== ""
-                                        ? "?path=" +
-                                        encodeURIComponent(
-                                            query.get("share_path")
-                                        )
-                                        : "")
+                                      id +
+                                      (query.get("share_path") !== ""
+                                          ? "?path=" +
+                                            encodeURIComponent(
+                                                query.get("share_path")
+                                            )
+                                          : "")
                                     : "/file/preview/" + query.get("id"))
                         },
                         subtitle: {
