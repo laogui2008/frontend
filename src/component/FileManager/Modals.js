@@ -20,7 +20,9 @@ import {
     DialogContent,
     DialogTitle,
     DialogContentText,
-    CircularProgress
+    CircularProgress,
+    FormControlLabel,
+    Checkbox
 } from "@material-ui/core";
 import Loading from "../Modals/Loading";
 import CopyDialog from "../Modals/Copy";
@@ -100,7 +102,8 @@ class ModalsCompoment extends Component {
         downloadURL: "",
         remoteDownloadPathSelect: false,
         source: "",
-        purchaseCallback: null
+        purchaseCallback: null,
+        deleteSourceFileSelect: false
     };
 
     handleInputChange = e => {
@@ -153,7 +156,7 @@ class ModalsCompoment extends Component {
         }
         if (
             this.props.modalsStatus.getSource !==
-                nextProps.modalsStatus.getSource &&
+            nextProps.modalsStatus.getSource &&
             nextProps.modalsStatus.getSource === true
         ) {
             API.get("/file/source/" + this.props.selected[0].id)
@@ -184,8 +187,8 @@ class ModalsCompoment extends Component {
                 this.props.selected[0].path === "/"
                     ? this.props.selected[0].path + this.props.selected[0].name
                     : this.props.selected[0].path +
-                      "/" +
-                      this.props.selected[0].name;
+                    "/" +
+                    this.props.selected[0].name;
             reqURL =
                 "/share/download/" +
                 this.props.selected[0].key +
@@ -277,7 +280,8 @@ class ModalsCompoment extends Component {
         API.delete("/object", {
             data: {
                 items: items,
-                dirs: dirs
+                dirs: dirs,
+                deleteSourceFileFlag: this.state.deleteSourceFileSelect
             }
         })
             .then(response => {
@@ -331,8 +335,8 @@ class ModalsCompoment extends Component {
             dst: this.DragSelectedPath
                 ? this.DragSelectedPath
                 : this.state.selectedPath === "//"
-                ? "/"
-                : this.state.selectedPath
+                    ? "/"
+                    : this.state.selectedPath
         })
             .then(() => {
                 this.onClose();
@@ -599,6 +603,18 @@ class ModalsCompoment extends Component {
         });
     };
 
+    handleDeleteSourceFileSelectClick = event => {
+        if (event.target.checked) {
+            this.setState({
+                deleteSourceFileSelect: true
+            });
+        } else {
+            this.setState({
+                deleteSourceFileSelect: false
+            });
+        }
+    };
+
     onClose = () => {
         this.setState({
             newFolderName: "",
@@ -611,7 +627,8 @@ class ModalsCompoment extends Component {
             downloadURL: "",
             shareUrl: "",
             remoteDownloadPathSelect: false,
-            source: ""
+            source: "",
+            deleteSourceFileSelect: false
         });
         this.newNameSuffix = "";
         this.props.closeAllModals();
@@ -864,6 +881,7 @@ class ModalsCompoment extends Component {
                             )}
                             吗？
                         </DialogContentText>
+                        <FormControlLabel control={<Checkbox checked={this.state.deleteSourceFileSelect} onChange={this.handleDeleteSourceFileSelectClick} name="deleteSourceFileSelect" />} label="删除源文件" />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.onClose}>取消</Button>
@@ -910,31 +928,31 @@ class ModalsCompoment extends Component {
                                             this.props.location.pathname
                                         )
                                             ? baseURL +
-                                              "/share/preview/" +
-                                              this.props.selected[0].key +
-                                              (this.props.selected[0].key
-                                                  ? "?path=" +
-                                                    encodeURIComponent(
-                                                        this.props.selected[0]
-                                                            .path === "/"
-                                                            ? this.props
-                                                                  .selected[0]
-                                                                  .path +
-                                                                  this.props
-                                                                      .selected[0]
-                                                                      .name
-                                                            : this.props
-                                                                  .selected[0]
-                                                                  .path +
-                                                                  "/" +
-                                                                  this.props
-                                                                      .selected[0]
-                                                                      .name
-                                                    )
-                                                  : "")
+                                            "/share/preview/" +
+                                            this.props.selected[0].key +
+                                            (this.props.selected[0].key
+                                                ? "?path=" +
+                                                encodeURIComponent(
+                                                    this.props.selected[0]
+                                                        .path === "/"
+                                                        ? this.props
+                                                            .selected[0]
+                                                            .path +
+                                                        this.props
+                                                            .selected[0]
+                                                            .name
+                                                        : this.props
+                                                            .selected[0]
+                                                            .path +
+                                                        "/" +
+                                                        this.props
+                                                            .selected[0]
+                                                            .name
+                                                )
+                                                : "")
                                             : baseURL +
-                                              "/file/preview/" +
-                                              this.props.selected[0].id
+                                            "/file/preview/" +
+                                            this.props.selected[0].id
                                     }
                                 />
                             )}
